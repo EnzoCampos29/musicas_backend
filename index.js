@@ -19,10 +19,26 @@ app.get("/", (request, response) => {
     const comandoSelect = "SELECT * FROM musicas_enzoCampos"
     sql.query(comandoSelect, (error, data) => {
         if (error){
-            console.log('error');
-            return
+            console.log("Erro ao buscar músicas:", error)
+            return response.status(500).json({
+                mensagem: "Erro ao buscar músicas"
+            })
         }
         response.json(data)
+    })
+})
+
+app.post("/cadastrar", (request, response) => {
+    const { titulo, artista, genero, ano, duracao } = request.body
+    const comandoInsert = "INSERT INTO musicas_enzoCampos(titulo, artista, genero, ano, duracao) VALUES (?, ?, ?, ?, ?)"
+
+    sql.query(comandoInsert, [titulo, artista, genero, ano, duracao], (error) => {
+        if (error) {
+            console.log(error)
+            return
+        }
+
+        response.status(201).json({ mensagem: "Música cadastrada com sucesso!" })
     })
 })
 
